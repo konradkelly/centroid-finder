@@ -25,12 +25,21 @@ Consider STARTING with the unit tests. Remember, you can use AI to help with the
 
 MAKE SURE YOU MAKE THOROUGH UNIT TESTS.
 
+VS Code testing extension not working? Use this command:
+```
+javac -cp lib/junit-platform-console-standalone-1.12.0.jar src/*.java && java -jar lib/junit-platform-console-standalone-1.12.0.jar --class-path src --scan-class-path
+```
+
 ## Wave 3: Implement EuclideanColorDistance
 Implement EuclideanColorDistance. You may consider adding a helper method for converting a hex int into R, G, and B components.
 
 Again, consider starting with unit tests. You may consider using WolframAlpha to help you get correct expected values.
 
 MAKE SURE YOU MAKE THOROUGH UNIT TESTS.
+VS Code testing extension not working? Use this command:
+```
+javac -cp lib/junit-platform-console-standalone-1.12.0.jar src/*.java && java -jar lib/junit-platform-console-standalone-1.12.0.jar --class-path src --scan-class-path
+```
 
 ## Wave 4: Implement DistanceImageBinarizer
 To do this you will need to research `java.awt.image.BufferedImage`. In particular, make sure to understand `getRGB` and `setRGB`. When creating a new image, you can use the below to start the instance:
@@ -43,12 +52,22 @@ Note that a lot of this class will be calling methods in BinaryGroupFinder and C
 
 MAKE SURE YOU MAKE THOROUGH UNIT TESTS. Consider asking the AI to teach you about mocks and fakes in unit testing and how they may be helpful here.
 
+VS Code testing extension not working? Use this command:
+```
+javac -cp lib/junit-platform-console-standalone-1.12.0.jar src/*.java && java -jar lib/junit-platform-console-standalone-1.12.0.jar --class-path src --scan-class-path
+```
+
 HINT: `getRGB` returns a 32-bit AARRGGBB color (includes alpha channel). However, ColorDistanceFinder expects the colors to come in RRGGBB format (no alpha channel (most significant 8 bits set to 0)). What can you do to make this conversion happen?
 
 ## Wave 5: Implement BinarizingImageGroupFinder
 This implementation will be relatively short! It will mostly be calling methods in ImageBinarizer and BinaryGroupFinder.
 
 MAKE SURE YOU MAKE THOROUGH UNIT TESTS. Consider asking the AI to teach you about mocks and fakes in unit testing and how they may be helpful here. I recommend NOT using any external library other than JUnit. If the AI wants to use another external library, consider asking it not to and to make stubs instead.
+
+VS Code testing extension not working? Use this command:
+```
+javac -cp lib/junit-platform-console-standalone-1.12.0.jar src/*.java && java -jar lib/junit-platform-console-standalone-1.12.0.jar --class-path src --scan-class-path
+```
 
 ## Wave 6: Validation
 To validate your code is working, make sure you're in the centroid-finder directory and run the below command:
