@@ -1,5 +1,5 @@
-import java.util.List;
 import java.awt.image.BufferedImage;
+import java.util.List;
 
 public interface ImageGroupFinder {
     /**
@@ -11,3 +11,8 @@ public interface ImageGroupFinder {
      */
     public List<Group> findConnectedGroups(BufferedImage image);
 }
+
+/* ADDING NOTES / STEPS
+    Here you basically find the connected grops, the groups are sorted in descending order using the compareTO method
+    You return the connected gropus in descending order
+ */

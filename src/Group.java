@@ -49,3 +49,21 @@ public record Group(int size, Coordinate centroid) implements Comparable<Group> 
         return String.format("%d,%d,%d", this.size(), this.centroid().x(), this.centroid().y());
     }
 }
+
+/* ADDING NOTES / STEPS
+   This is is the group of the contiguous pixel
+   
+   the top left (x: 0, y: 0) --> y increases downward as x increases to the right. eg row:4 column:7 corresponds to x:7, y:4
+
+   we are supposed to return a list of sorted groups , the size being the number of pixels in the group, 
+   the centroid being the average of each picel location
+   eg
+   x coordinate of centroid is the sum of all x coordinates / number of pixela in the group --> basically the average
+   y coordinate of centroid is the sum of all y coordinates / number of pixela in rhe group --> basically the average
+
+  the groups are supposed to be in descending order using the groups compareTO method, with the largest group being first, smallest --> last, ties are browken
+  the desceding y value first then the descending x
+
+  you;re supposed ot teturn it as a CSV row representing the group size and coordinates
+   
+   */

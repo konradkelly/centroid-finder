@@ -32,4 +32,20 @@ public interface BinaryGroupFinder {
     * @return the found groups of connected pixels in descending order
     */
    public List<Group> findConnectedGroups(int[][] image);
+   /* ADDING NOTES / STEPS
+   If array / subarray are null throw a NullPointerException
+   if array is invlaud throw an IllegalArgumentException
+   
+   the top left (x: 0, y: 0) y increases downward as x increases to the right. eg row:4 column:7 corresponds to x:7, y:4
+
+   we are supposed to return a list of sorted groups , the size being the number of pixels in the group, the centroid being the average of each picel location
+   eg
+   x coordinate of centroid is the sum of all x coordinates / number of pixela in the group --> basically the average
+   y coordinate of centroid is the sum of all y coordinates / number of pixela in rhe group --> basically the average
+
+  the groups are supposed to be in descending order using the groups compareTO method, with the largest group being first, smallest --> last, ties are browken
+  the desceding y value first then the descending x
+   
+   */
+
 }
