@@ -82,6 +82,7 @@ This will compile your files and run the main method in ImageSummaryApp against 
 
 Once you have confirmed it is working, clean up your code, make sure it's committed and pushed, and make a PR to submit. Great job!
 
-## Optional Wave 7: Enhancements?
-If you want to, you can make a new branch to start experimenting. See if you can come up with a better color distance method (hint: look up perceptual color spaces). See if you can make your code more efficient or mor suited to spotting salamanders! Experiment with other test files. PLEASE MAKE SURE THIS IS IN A SEPARATE BRANCH FROM YOUR SUBMISSION.
+## Wave 7: Video Processing Restructuring
+In this wave, we prepare the project for MP4 support by restructuring centroid-finder into a Maven project and selecting a Java video processing library. No video centroid tracking is implemented yet; this step is only setup so the next assignment can process videos and output timestamped centroid CSV data.
+
 
