@@ -29,3 +29,7 @@ target/
 # Generated outputs from ImageSummaryApp runs
 binarized.png
 groups.csv
+
+# Local experiment/build outputs
+jcodec-output.csv
+mvn_output.txt
