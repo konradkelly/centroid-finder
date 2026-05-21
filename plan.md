@@ -21,3 +21,32 @@
 5. JCodecVideoFrameReader (implementation)
 - Uses JCodec to read mp4 frames.
 - Produces frames with time metadata.
+
+6. FrameSample
+- Data object that contains:
+- timestampSeconds
+- frameImage (or frame data type used by your project)
+
+7. FrameCentroidAnalyzer
+- For each frame:
+- binarize using target color + threshold
+- finds groups of salamander pixels
+- select the largest group
+- return centroid coordinate or missing result
+
+8. TimestampedCentroidResult
+- Data object holding:
+- timestampSeconds
+- x
+- y
+
+9. CsvResultWriter
+- Writes rows to output CSV:
+- timestamp, x, y
+
+10. VideoCentroidPipeline
+- Coordinates the full workflow:
+- read frame sample
+- analyze frame
+- write CSV row
+- continue until all frames are read
