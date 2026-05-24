@@ -42,3 +42,11 @@ High-level components:
     200 — Job failed during processing - {"status": "error", "error": "..."}.
     404 — Job ID was not found - {"error": "Job ID not found"}.
     500 — Server error while fetching job status - {"error": "Error fetching job status"}.
+    
+### 3. Configuration and Environment Variables
+    Use `.env` for:
+    - `VIDEOS_DIR` (absolute path to source videos)
+    - `RESULTS_DIR` (absolute path where CSV outputs are written)
+    - `VIDEO_PROCESSOR_JAR` (absolute path to processor JAR)
+
+    - Map env vars into `application.yml` placeholders.
