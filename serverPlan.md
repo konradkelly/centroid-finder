@@ -59,3 +59,21 @@ High-level components:
     - Use `ProcessBuilder` to launch `java -jar <processor.jar> ...`.
     - Launch asynchronously using `@Async` service method or `TaskExecutor`.
     - Store job state before and after process completion.
+
+## 5. Job Lifecycle
+    Use UUID for job IDs.
+
+
+    Job states:
+    - `processing`
+    - `done` (include public results path)
+    - `error` (include safe error summary)
+
+
+    Lifecycle steps:
+    1. Validate request (`filename`, `targetColor`, `threshold`).
+    2. Create job record with `processing`.
+    3. Return `202` immediately with `jobId`.
+    4. Start background worker process for JAR execution.
+    5. On completion, write `done` + result path.
+    6. On failure, write `error` + message.
