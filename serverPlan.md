@@ -77,3 +77,16 @@ High-level components:
     4. Start background worker process for JAR execution.
     5. On completion, write `done` + result path.
     6. On failure, write `error` + message.
+
+## 6. Validation and Error Handling Plan
+
+
+    Validation rules:
+    - `filename` must exist in `VIDEOS_DIR` and reject path traversal.
+    - `targetColor` must be valid hex (6 chars in length; optional leading `#`).
+    - `threshold` must be integer in the range of `0-255`.
+
+
+    Error handling:
+    - Standardize all error responses to a uniform JSON schema
+    - Never expose internal stack traces or implementation details in client responses; record them server-side for diagnostics.
