@@ -90,3 +90,7 @@ High-level components:
     Error handling:
     - Standardize all error responses to a uniform JSON schema
     - Never expose internal stack traces or implementation details in client responses; record them server-side for diagnostics.
+
+## Architecture Diagram
+
+![Server Diagram](Server_Diagram.png)
