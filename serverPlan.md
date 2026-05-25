@@ -50,3 +50,12 @@ High-level components:
     - `VIDEO_PROCESSOR_JAR` (absolute path to processor JAR)
 
     - Map env vars into `application.yml` placeholders.
+
+### 4. Non-Blocking Background Processing
+    Request must not wait for the JAR to finish. Jobs should be asynchronous allowing for concurrency.
+
+
+    Spring Boot approach:
+    - Use `ProcessBuilder` to launch `java -jar <processor.jar> ...`.
+    - Launch asynchronously using `@Async` service method or `TaskExecutor`.
+    - Store job state before and after process completion.
