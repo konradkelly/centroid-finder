@@ -1,0 +1,15 @@
+app:
+  videos-dir: ${java.io.tmpdir}/centroid-finder-test-videos
+  results-dir: ${java.io.tmpdir}/centroid-finder-test-results
+  video-processor-jar: ${java.io.tmpdir}/processor.jar
+  job-timeout: 30s
+
+spring:
+  datasource:
+    url: jdbc:h2:mem:centroidfinder;MODE=PostgreSQL;DB_CLOSE_DELAY=-1
+    username: sa
+    password:
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    open-in-view: false

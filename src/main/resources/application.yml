@@ -1,0 +1,23 @@
+server:
+  port: 8080
+
+app:
+  videos-dir: ${VIDEOS_DIR:./videos}
+  results-dir: ${RESULTS_DIR:./results}
+  video-processor-jar: ${VIDEO_PROCESSOR_JAR:./target/centroid-finder-1.0-SNAPSHOT-jar-with-dependencies.jar}
+  job-timeout: ${JOB_TIMEOUT:10m}
+
+spring:
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/centroid_finder}
+    username: ${SPRING_DATASOURCE_USERNAME:postgres}
+    password: ${SPRING_DATASOURCE_PASSWORD:postgres}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    open-in-view: false
+  task:
+    execution:
+      pool:
+        core-size: 4
+        max-size: 8
