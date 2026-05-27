@@ -33,3 +33,8 @@ groups.csv
 # Local experiment/build outputs
 jcodec-output.csv
 mvn_output.txt
+
+# Local environment overrides (never commit secrets)
+.env
+.env.local
+
