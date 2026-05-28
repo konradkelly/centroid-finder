@@ -1,0 +1,8 @@
+package io.github.konradkelly.centroidfinder;
+
+/*
+The Color Distance Finder is an interface that outlines a method that calculates
+the color distance between two colors. It states that the implementation
+should use bit shifting and masking. This interface is implemented by the
+EuclideanColorDistance class.
+ */
