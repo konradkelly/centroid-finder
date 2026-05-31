@@ -6,31 +6,62 @@ Work with your partner to review your code. Actually go back and look at all you
 
 refactoring code
 What improvements can you make to the design/architecture of your code?
--Create YAML infrastructure files to support production PostgreSQL.
+
 -Refactor to integrate ffmpeg for faster performance but keep existing CLI arguments.
 - Create VideoControllerTest, VideoApiIntegrationTest, ThumbnailServiceTest with comprehensive unit tests
 - Add Javadocs to any method in any class currently missing them.
+- Improve error handling by using specific types of exceptions (eg., IOException).
+- Use detailed and specific error messages from Job Service in error messages in the VideoProcessor app.
 - Remove any duplicate files from the repo
+-Create production branch with docker-compose.yml and Spring profile for PostgreSQL deployment.
+
 How can you split up large methods or classes into smaller components?
+
+They are already quite modular.
+
 Are there unused files/methods that can be removed?
+
+The JCodecExperiment App seems to be of no use at this point since it was created before the server branch. It should either be removed or reworked into a test file.
+
 Where would additional Java interfaces be appropriate?
+
+At this point, the existing interfaces appear sufficient and map logically to concrete implementations. 
+
 How can you make things simpler, more-usable, and easier to maintain?
 Other refactoring improvements?
+
+Add more Java docs and tests.
+
 adding tests
 What portions of your code are untested / only lightly tested?
+
+StaticFileConfig, VideoProcessingConfig, ServerPathsProperties have no tests as two of the are records and a configuration for the Spring API. The tests are are written are for core logic of this application. One class that could be tested is the JobStatusMapper to validate its mapping logic.
+
 Where would be the highest priority places to add new tests?
+
+APIExceptionHandler is missing tests in VideoControllerTest for when a video is not found or there is a server error.
+
 Other testing improvements?
+Production branch needs test against a DB instead of local file system. PostgreSQL Docker containers can be used.
+
 improving error handling
 What parts of your code are brittle?
+
 Where could you better be using exceptions?
 Where can you better add input validation to check invalid input?
 How can you better be resolving/logging/surfacing errors? Hint: almost any place you're using "throws Exception" or "catch(Exception e)" should likely be improved to specify the specific types of exceptions that might be thrown or caught.
+
 Other error handling improvements?
+
 writing documentation
 What portions of your code are missing Javadoc/JSdoc for the methods/classes?
+
 What documentation could be made clearer or improved?
+
 Are there sections of dead code that are commented out?
+
 Where would be the most important places to add documentation to make your code easier to read?
+
 Other documentation improvements?
 improving performance (optional)
 What parts of your code / tests run particularly slowly?
