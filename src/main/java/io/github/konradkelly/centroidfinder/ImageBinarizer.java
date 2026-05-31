@@ -1,3 +1,5 @@
+package io.github.konradkelly.centroidfinder;
+
 import java.awt.image.BufferedImage;
 
 /**
