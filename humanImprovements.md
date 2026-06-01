@@ -46,21 +46,30 @@ Production branch needs test against a DB instead of local file system. PostgreS
 
 improving error handling
 What parts of your code are brittle?
+I think the imagesummaryapp.java can be improved by using more specific exceptios  like a numberformatexception instead of the general ones that we have
 
 Where could you better be using exceptions?
+i think in jecodeexpremimentapp we can use different type of exceptions than using the general exceptions
+
 Where can you better add input validation to check invalid input?
+I'd say the ditanceimagebinarizer.java would improve with having a something valudate the threshold is not negative before processing 
+
 How can you better be resolving/logging/surfacing errors? Hint: almost any place you're using "throws Exception" or "catch(Exception e)" should likely be improved to specify the specific types of exceptions that might be thrown or caught.
+I'd say having / adding more validations to check if image exists, and if the color jas processed or if there are threshold ranges
 
 Other error handling improvements?
 
 writing documentation
 What portions of your code are missing Javadoc/JSdoc for the methods/classes?
+I'd say the toBinarryArray and toBuffered image can use javadoc comnments
 
 What documentation could be made clearer or improved?
+Some of the notes can be moved into javadoc comments, so its closer to the actual code
 
 Are there sections of dead code that are commented out?
-
+Not any that i know
 Where would be the most important places to add documentation to make your code easier to read?
+Notes.md -  we should review if the contents should be moved to javadoc comments
 
 Other documentation improvements?
 improving performance (optional)
