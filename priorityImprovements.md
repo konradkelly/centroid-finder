@@ -38,3 +38,10 @@
 
 - **Decouple `ThumbnailService` from `JCodecVideoFrameReader`**: `ThumbnailService` hard-codes `new JCodecVideoFrameReader(...)` despite `VideoFrameReader` being an interface. Introduce a `VideoFrameReaderFactory` interface, implement it as a `@Component`, and inject it into the service — enabling implementation swaps (e.g., ffmpeg) and proper unit testing without touching the filesystem. See [video-frame-reader-factory.md](video-frame-reader-factory.md) for full details.
 - **`JobStore` is a pointless wrapper**: It only delegates directly to `JobRepository`. Either add real logic (caching, retry) or eliminate it and inject `JobRepository` directly.
+
+---
+
+## Documentation
+
+- **REST API is undocumented**: No Swagger/OpenAPI annotations on `VideoController`. Document each endpoint's path variables, query parameters, response shapes, and possible error codes.
+- **`DefaultJobProcessLauncher`**: The Spring Boot `PropertiesLauncher`-based invocation strategy is non-obvious. A comment explaining why this specific launch approach is needed would help future maintainers.
