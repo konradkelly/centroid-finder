@@ -88,38 +88,15 @@ public class DfsBinaryGroupFinder implements BinaryGroupFinder {
             data[1] += col;
             data[2] += row;
 
-            for (int[] adjacentPixel : adjacentPixels(image, pixel)) {
-                if (visited[adjacentPixel[0]][adjacentPixel[1]] == 0 && image[adjacentPixel[0]][adjacentPixel[1]] == 1) {
-                    stack.push(adjacentPixel);
-                }
-            }
+            int rows = image.length;
+            int cols = image[0].length;
+            if (row - 1 >= 0   && visited[row-1][col] == 0 && image[row-1][col] == 1) stack.push(new int[]{row-1, col});
+            if (row + 1 < rows && visited[row+1][col] == 0 && image[row+1][col] == 1) stack.push(new int[]{row+1, col});
+            if (col - 1 >= 0   && visited[row][col-1] == 0 && image[row][col-1] == 1) stack.push(new int[]{row, col-1});
+            if (col + 1 < cols && visited[row][col+1] == 0 && image[row][col+1] == 1) stack.push(new int[]{row, col+1});
         }
 
         return data;
-    }
-
-    private static List<int[]> adjacentPixels(int[][] image, int[] current) {
-        int curR = current[0];
-        int curC = current[1];
-        
-        List<int[]> adjacentPixels = new ArrayList<>();
-
-        int[][] directions = {
-            {-1, 0},
-            {1, 0},
-            {0, -1},
-            {0, 1}
-        };
-
-        for (int[] dir : directions) {
-            int newR = curR + dir[0];
-            int newC = curC + dir[1];
-
-            if (newR >= 0 && newR < image.length && newC >= 0 && newC < image[0].length) {
-                adjacentPixels.add(new int[]{newR, newC});
-            }
-        }
-        return adjacentPixels;
     }
 }
 

@@ -53,4 +53,23 @@ public class DistanceImageBinarizerTest {
         assertEquals(0xFFFFFF, img.getRGB(0,0) & 0xFFFFFF);
         assertEquals(0x000000, img.getRGB(1,0) & 0xFFFFFF);
     }
+
+    @Test
+    public void pixelColorIsReadCorrectlyAfterBulkOptimization() {
+        // Verifies that each pixel's exact RGB value is used — not row/col swapped
+        // and not affected by any bulk-read indexing error.
+        // Pixel at (x=1, y=0) is red (0xFF0000); all others are black (0x000000).
+        // EuclideanColorDistance: red vs red = 0 → white; red vs black = large → black.
+        BufferedImage img = new BufferedImage(3, 2, BufferedImage.TYPE_INT_RGB);
+        img.setRGB(1, 0, 0xFF0000); // x=1, y=0
+
+        ColorDistanceFinder euclidean = new EuclideanColorDistance();
+        DistanceImageBinarizer bin = new DistanceImageBinarizer(euclidean, 0xFF0000, 10);
+
+        int[][] result = bin.toBinaryArray(img);
+
+        assertEquals(1, result[0][1]); // (y=0, x=1) → white (distance 0)
+        assertEquals(0, result[0][0]); // (y=0, x=0) → black
+        assertEquals(0, result[1][0]); // (y=1, x=0) → black
+    }
 }
