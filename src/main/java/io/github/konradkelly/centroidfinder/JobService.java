@@ -17,20 +17,20 @@ public class JobService {
 
     private final ServerPathsProperties paths;
     private final ThumbnailService thumbnailService;
-    private final JobStore jobStore;
+    private final JobRepository jobRepository;
     private final JobProcessLauncher jobProcessLauncher;
     private final Executor taskExecutor;
 
     public JobService(
         ServerPathsProperties paths,
         ThumbnailService thumbnailService,
-        JobStore jobStore,
+        JobRepository jobRepository,
         JobProcessLauncher jobProcessLauncher,
         @Qualifier("applicationTaskExecutor") Executor taskExecutor
     ) {
         this.paths = paths;
         this.thumbnailService = thumbnailService;
-        this.jobStore = jobStore;
+        this.jobRepository = jobRepository;
         this.jobProcessLauncher = jobProcessLauncher;
         this.taskExecutor = taskExecutor;
     }
@@ -41,7 +41,7 @@ public class JobService {
         int threshold = parseThreshold(thresholdValue);
 
         UUID jobId = UUID.randomUUID();
-        JobEntity job = jobStore.createProcessing(jobId);
+        JobEntity job = jobRepository.save(JobEntity.processing(jobId));
         Path outputPath = buildOutputPath(filename, jobId);
 
         taskExecutor.execute(() -> runProcess(job, inputVideo, outputPath, normalizedTargetColor, threshold));
@@ -49,7 +49,7 @@ public class JobService {
     }
 
     public JobEntity get(UUID jobId) {
-        return jobStore.find(jobId).orElseThrow(() -> new NotFoundException("Job ID not found"));
+        return jobRepository.findById(jobId).orElseThrow(() -> new NotFoundException("Job ID not found"));
     }
 
     private void runProcess(JobEntity job, Path inputVideo, Path outputPath, String targetColor, int threshold) {
@@ -109,7 +109,7 @@ public class JobService {
             job.setResultPath(null);
         }
 
-        jobStore.save(job);
+        jobRepository.save(job);
     }
 
     private Path buildOutputPath(String filename, UUID jobId) {

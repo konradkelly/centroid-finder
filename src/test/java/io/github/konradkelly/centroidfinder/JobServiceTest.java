@@ -32,14 +32,14 @@ public class JobServiceTest {
         ThumbnailService thumbnailService = Mockito.mock(ThumbnailService.class);
         when(thumbnailService.resolveVideoPath("a.mp4")).thenReturn(Path.of("videos", "a.mp4"));
 
-        JobStore jobStore = Mockito.mock(JobStore.class);
-        when(jobStore.createProcessing(any())).thenAnswer(invocation -> JobEntity.processing(invocation.getArgument(0)));
+        JobRepository jobRepository = Mockito.mock(JobRepository.class);
+        when(jobRepository.save(any())).thenAnswer(invocation -> JobEntity.processing(((JobEntity) invocation.getArgument(0)).getId()));
 
         JobProcessLauncher launcher =
             (processorJar, inputVideo, outputPath, targetColor, threshold, timeout) -> JobProcessResult.completed(0, "");
 
         Executor executor = runnable -> {};
-        JobService service = new JobService(properties, thumbnailService, jobStore, launcher, executor);
+        JobService service = new JobService(properties, thumbnailService, jobRepository, launcher, executor);
 
         ValidationException exception = assertThrows(
             ValidationException.class,
@@ -56,9 +56,8 @@ public class JobServiceTest {
         ThumbnailService thumbnailService = Mockito.mock(ThumbnailService.class);
         when(thumbnailService.resolveVideoPath("a.mp4")).thenReturn(Path.of("videos", "a.mp4"));
 
-        JobStore jobStore = Mockito.mock(JobStore.class);
-        when(jobStore.createProcessing(any())).thenAnswer(invocation -> JobEntity.processing(invocation.getArgument(0)));
-        when(jobStore.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
+        JobRepository jobRepository = Mockito.mock(JobRepository.class);
+        when(jobRepository.save(any())).thenAnswer(invocation -> JobEntity.processing(((JobEntity) invocation.getArgument(0)).getId()));
 
         JobProcessLauncher launcher = Mockito.mock(JobProcessLauncher.class);
         when(launcher.launch(any(), any(), any(), any(), anyInt(), any())).thenReturn(JobProcessResult.completed(0, ""));
@@ -69,7 +68,7 @@ public class JobServiceTest {
             runnable.run();
         };
 
-        JobService service = new JobService(properties, thumbnailService, jobStore, launcher, executor);
+        JobService service = new JobService(properties, thumbnailService, jobRepository, launcher, executor);
 
         UUID id = service.start("a.mp4", "FF0000", "20");
 
@@ -84,21 +83,20 @@ public class JobServiceTest {
         ThumbnailService thumbnailService = Mockito.mock(ThumbnailService.class);
         when(thumbnailService.resolveVideoPath("a.mp4")).thenReturn(Path.of("videos", "a.mp4"));
 
-        JobStore jobStore = Mockito.mock(JobStore.class);
-        when(jobStore.createProcessing(any())).thenAnswer(invocation -> JobEntity.processing(invocation.getArgument(0)));
-        when(jobStore.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
+        JobRepository jobRepository = Mockito.mock(JobRepository.class);
+        when(jobRepository.save(any())).thenAnswer(invocation -> JobEntity.processing(((JobEntity) invocation.getArgument(0)).getId()));
 
         JobProcessLauncher launcher = Mockito.mock(JobProcessLauncher.class);
         when(launcher.launch(any(), any(), any(), any(), anyInt(), any())).thenReturn(JobProcessResult.completed(0, ""));
 
         Executor executor = Runnable::run;
 
-        JobService service = new JobService(properties, thumbnailService, jobStore, launcher, executor);
+        JobService service = new JobService(properties, thumbnailService, jobRepository, launcher, executor);
 
         UUID id = service.start("a.mp4", "FF0000", "20");
 
         assertNotNull(id);
-        verify(jobStore).save(org.mockito.ArgumentMatchers.argThat(job ->
+        verify(jobRepository).save(org.mockito.ArgumentMatchers.argThat(job ->
             job.getStatus() == JobStatus.ERROR &&
             "Processor did not produce an output file".equals(job.getErrorMessage())
         ));
@@ -111,9 +109,8 @@ public class JobServiceTest {
         ThumbnailService thumbnailService = Mockito.mock(ThumbnailService.class);
         when(thumbnailService.resolveVideoPath("a.mp4")).thenReturn(Path.of("videos", "a.mp4"));
 
-        JobStore jobStore = Mockito.mock(JobStore.class);
-        when(jobStore.createProcessing(any())).thenAnswer(invocation -> JobEntity.processing(invocation.getArgument(0)));
-        when(jobStore.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
+        JobRepository jobRepository = Mockito.mock(JobRepository.class);
+        when(jobRepository.save(any())).thenAnswer(invocation -> JobEntity.processing(((JobEntity) invocation.getArgument(0)).getId()));
 
         JobProcessLauncher launcher = Mockito.mock(JobProcessLauncher.class);
         when(launcher.launch(any(), any(), any(), any(), anyInt(), any()))
@@ -121,12 +118,12 @@ public class JobServiceTest {
 
         Executor executor = Runnable::run;
 
-        JobService service = new JobService(properties, thumbnailService, jobStore, launcher, executor);
+        JobService service = new JobService(properties, thumbnailService, jobRepository, launcher, executor);
 
         UUID id = service.start("a.mp4", "FF0000", "20");
 
         assertNotNull(id);
-        verify(jobStore).save(org.mockito.ArgumentMatchers.argThat(job ->
+        verify(jobRepository).save(org.mockito.ArgumentMatchers.argThat(job ->
             job.getStatus() == JobStatus.ERROR &&
             "Processor timed out".equals(job.getErrorMessage())
         ));
@@ -139,9 +136,8 @@ public class JobServiceTest {
         ThumbnailService thumbnailService = Mockito.mock(ThumbnailService.class);
         when(thumbnailService.resolveVideoPath("a.mp4")).thenReturn(Path.of("videos", "a.mp4"));
 
-        JobStore jobStore = Mockito.mock(JobStore.class);
-        when(jobStore.createProcessing(any())).thenAnswer(invocation -> JobEntity.processing(invocation.getArgument(0)));
-        when(jobStore.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
+        JobRepository jobRepository = Mockito.mock(JobRepository.class);
+        when(jobRepository.save(any())).thenAnswer(invocation -> JobEntity.processing(((JobEntity) invocation.getArgument(0)).getId()));
 
         JobProcessLauncher launcher = Mockito.mock(JobProcessLauncher.class);
         when(launcher.launch(any(), any(), any(), any(), anyInt(), any()))
@@ -149,12 +145,12 @@ public class JobServiceTest {
 
         Executor executor = Runnable::run;
 
-        JobService service = new JobService(properties, thumbnailService, jobStore, launcher, executor);
+        JobService service = new JobService(properties, thumbnailService, jobRepository, launcher, executor);
 
         UUID id = service.start("a.mp4", "FF0000", "20");
 
         assertNotNull(id);
-        verify(jobStore).save(org.mockito.ArgumentMatchers.argThat(job ->
+        verify(jobRepository).save(org.mockito.ArgumentMatchers.argThat(job ->
             job.getStatus() == JobStatus.ERROR &&
             "Processor failed".equals(job.getErrorMessage())
         ));
