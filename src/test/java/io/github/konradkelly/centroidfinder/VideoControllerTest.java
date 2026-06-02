@@ -101,4 +101,32 @@ public class VideoControllerTest {
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.status").value("processing"));
     }
+
+    @Test
+    public void thumbnailReturnsNotFoundWhenVideoMissing() throws Exception {
+        when(thumbnailService.generateThumbnail("missing.mp4"))
+            .thenThrow(new NotFoundException("Video not found"));
+
+        mockMvc.perform(get("/thumbnail/missing.mp4"))
+            .andExpect(status().isNotFound())
+            .andExpect(jsonPath("$.error").value("Video not found"));
+    }
+
+    @Test
+    public void getStatusReturnsNotFoundForUnknownJobId() throws Exception {
+        UUID jobId = UUID.randomUUID();
+        when(jobService.get(jobId)).thenThrow(new NotFoundException("Job ID not found"));
+
+        mockMvc.perform(get("/process/" + jobId + "/status"))
+            .andExpect(status().isNotFound())
+            .andExpect(jsonPath("$.error").value("Job ID not found"));
+    }
+
+    @Test
+    public void getStatusReturnsNotFoundForMalformedJobUuid() throws Exception {
+        mockMvc.perform(get("/process/not-a-uuid/status"))
+            .andExpect(status().isNotFound())
+            .andExpect(jsonPath("$.error").value("Job ID not found"));
+    }
+   
 }
