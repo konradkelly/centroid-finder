@@ -307,6 +307,6 @@ mvn -P integration test
 - **`Could not autowire ServerPathsProperties`** — Ensure `application.yml` has the `app:` block, or set the env vars above.
 - **`Processor did not produce an output file`** — The subprocess exited cleanly but wrote nothing. Check server logs (WARN level) for captured stdout/stderr and confirm `VIDEO_PROCESSOR_JAR` points at the shaded jar with dependencies.
 - **`Processor timed out`** — Job exceeded `JOB_TIMEOUT`. Increase the limit (e.g. `JOB_TIMEOUT=30m`) for large videos.
-- **PostgreSQL connection refused locally** — The default profile expects a running PostgreSQL on the URL in `SPRING_DATASOURCE_URL`. For local dev without Postgres, run with `-Dspring.profiles.active=test` to use the in-memory H2 datasource configured under `src/test/resources/application.yml`.
+- **PostgreSQL connection refused locally** — The default profile expects a running PostgreSQL on the URL in `SPRING_DATASOURCE_URL`. For local dev without Postgres, run with `-Dspring-boot.run.profiles=dev` to use the in-memory H2 datasource configured under `src/main/resources/application-dev.yml`.
 - **Integration tests skipped by `mvn test`** — That is intentional: `**/*IntegrationTest.java` is excluded from the default Surefire run. Use `mvn -P integration test` to include them.
 
