@@ -58,3 +58,62 @@
 - **REST API is undocumented**: No Swagger/OpenAPI annotations on `VideoController`. Document each endpoint's path variables, query parameters, response shapes, and possible error codes.
 - **`ServerPathsProperties`**: The config record has no Javadoc explaining what each property controls or any valid ranges/constraints (e.g., `jobTimeout` minimum value).
 - **`DefaultJobProcessLauncher`**: The Spring Boot `PropertiesLauncher`-based invocation strategy is non-obvious. A comment explaining why this specific launch approach is needed would help future maintainers.
+
+Here are the main areas to focus on:
+
+`FrameCentroidAnalyzer`
+
+- Make it easier to test by allowing injection of ImageBinarizer / ImageGroupFinder rather than hard-coding `DistanceImageBinarizer` and `DfsBinaryGroupFinder`.
+- Add defensive checks for null sample and for groupFinder.findConnectedGroups(...) returning null.
+- Do not rely on groups.get(0) unless you can guarantee sorting behavior always holds; consider explicitly picking the largest group or verifying sort order.
+Document the behavior clearly: what happens when no groups exist, when multiple groups tie, etc.
+
+`JCodecVideoFrameReader`
+
+- The frame rate detection is brittle: deriving rate from totalFrames / totalDuration can fail for malformed metadata. Add fallback behavior or a clearer error path.
+- Improve resource handling: if FrameGrab or channel initialization partially succeeds, make sure resources are always closed cleanly.
+- Consider exposing a clearer exception type for invalid video files instead of only IllegalArgumentException.
+- close() should be robust if called multiple times, and ideally it should also close all resources associated with the reader.
+- If possible, use whatever frame timestamp metadata JCodec provides instead of manually counting frames for time calculation.
+
+`DistanceImageBinarizer`
+
+- Add null checks and validate image is not empty before processing.
+- Validate constructor parameters: distanceFinder should not be null, threshold should be non-negative, targetColor should be restricted to a 24-bit RGB value.
+- `toBufferedImage` should validate the input array shape, handle empty arrays, and guarantee rectangularity instead of assuming image[0].length.
+- Remove or clean up the duplicated comment/note clutter and keep JavaDocs concise.
+- Performance: if the distance implementation uses a square root, consider comparing squared distances when possible to avoid repeated expensive operations.
+
+`BinaryGroupFinder / BinarizingImageGroupFinder`
+
+- Add explicit null checks for the input array/image.
+- Ensure the contract clearly states whether implementations may mutate input arrays or whether they must be immutable.
+- In `BinarizingImageGroupFinder`, validate that the binary output is valid before handing it to the group finder.
+## Testing
+
+- Add unit tests for `DistanceImageBinarizer`:
+- verify threshold behavior at boundaries
+- verify correct handling of alpha / RGB values
+- verify invalid inputs raise expected exceptions
+- Add tests for `BinaryGroupFinder` implementations:
+- connected components in simple arrays
+- null / non-rectangular arrays
+- sorting order expectations
+- Add tests for `FrameCentroidAnalyzer`:
+- no groups => missing result
+- single group => correct centroid
+- multiple groups => largest chosen
+- Add integration-style tests for `BinarizingImageGroupFinder` with synthetic images to ensure end-to-end conversion and grouping works.
+- Add error-path tests for `JCodecVideoFrameReader` if possible, or at least for invalid video paths.
+## Documentation / code quality
+
+- Remove repeated “ADDING NOTES / STEPS” comments embedded in production classes.
+- Keep Javadoc concise and precise; document thrown exceptions and edge cases.
+- Consider adding a small design note or README section about how the centroid finder pipeline works: video → frame → binarize → connected groups → centroid.
+
+## General robustness
+
+- Avoid assumptions about image format / transparency in binarization.
+- Make sure all public APIs fail fast with clear exceptions on invalid input instead of letting NullPointerException or array indexing errors propagate.
+- If security matters, validate external file paths and avoid leaking sensitive internal details in exception messages.
+- These are the main directions; the code is generally structured well, but improving validation, test coverage, resource handling, and making behavior explicit will make it much more robust and maintainable.
