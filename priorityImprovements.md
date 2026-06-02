@@ -16,7 +16,7 @@
 ## Tests
 
 - **Major coverage gaps on the server side**: `VideoCatalogService`, `ThumbnailService`, `VideoCentroidPipeline`, `DefaultJobProcessLauncher`, and `ApiExceptionHandler` have no unit tests at all.
-- **`VideoControllerTest` — missing error path tests**: No test for thumbnail 404 (video not found), or for `getStatus` returning 404 for an unknown job ID, or for a malformed job UUID.
+- **`VideoControllerTest` — missing error path tests**: No test for thumbnail 404 (video not found), or for `getStatus` returning 404 for an unknown job ID, or for a malformed job UUID. -- DONE
 
 ---
 

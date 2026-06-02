@@ -128,5 +128,44 @@ public class VideoControllerTest {
             .andExpect(status().isNotFound())
             .andExpect(jsonPath("$.error").value("Job ID not found"));
     }
-   
+     @Test
+    public void getStatusReturnsDoneWithResult() throws Exception {
+        UUID jobId = UUID.randomUUID();
+        when(jobService.get(jobId)).thenReturn(JobEntity.processing(jobId)); // actual entity isn't inspected; mapper drives response
+        when(jobStatusMapper.toResponse(any())).thenReturn(new JobStatusResponseDto("done", "results/output.json", null));
+
+        mockMvc.perform(get("/process/" + jobId + "/status"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.status").value("done"))
+            .andExpect(jsonPath("$.result").value("results/output.json"));
+    }
+
+    @Test
+    public void getStatusReturnsErrorStatusWithMessage() throws Exception {
+        UUID jobId = UUID.randomUUID();
+        when(jobService.get(jobId)).thenReturn(JobEntity.processing(jobId));
+        when(jobStatusMapper.toResponse(any())).thenReturn(new JobStatusResponseDto("error", null, "Processing failed"));
+
+        mockMvc.perform(get("/process/" + jobId + "/status"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.status").value("error"))
+            .andExpect(jsonPath("$.error").value("Processing failed"));
+    }
+    @Test
+    public void startProcessReturnsNotFoundWhenVideoMissingOnStart() throws Exception {
+        when(jobService.start(eq("missing.mp4"), any(), any()))
+            .thenThrow(new NotFoundException("Video not found"));
+
+        mockMvc.perform(post("/process/missing.mp4").param("targetColor", "FFAA11").param("threshold", "20"))
+            .andExpect(status().isNotFound())
+            .andExpect(jsonPath("$.error").value("Video not found"));
+    } @Test
+    public void startProcessReturnsNotFoundWhenVideoMissingOnStart() throws Exception {
+        when(jobService.start(eq("missing.mp4"), any(), any()))
+            .thenThrow(new NotFoundException("Video not found"));
+
+        mockMvc.perform(post("/process/missing.mp4").param("targetColor", "FFAA11").param("threshold", "20"))
+            .andExpect(status().isNotFound())
+            .andExpect(jsonPath("$.error").value("Video not found"));
+    }
 }
