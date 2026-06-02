@@ -11,15 +11,17 @@ import org.springframework.stereotype.Service;
 @Service
 public class ThumbnailService {
     private final ServerPathsProperties paths;
+    private final VideoFrameReaderFactory readerFactory;
 
-    public ThumbnailService(ServerPathsProperties paths) {
+    public ThumbnailService(ServerPathsProperties paths, VideoFrameReaderFactory readerFactory) {
         this.paths = paths;
+        this.readerFactory = readerFactory;
     }
 
     public byte[] generateThumbnail(String filename) {
         Path videoPath = resolveVideoPath(filename);
 
-        try (VideoFrameReader reader = new JCodecVideoFrameReader(videoPath.toString())) {
+        try (VideoFrameReader reader = readerFactory.open(videoPath.toString())) {
             FrameSample sample = reader.nextFrame();
             if (sample == null) {
                 throw new ServerException("Error generating thumbnail");
