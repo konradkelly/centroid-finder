@@ -31,3 +31,10 @@
 
 - **`ApiExceptionHandler.handleFallback` — no logging**: The catch-all `Exception` handler swallows the stack trace entirely. At minimum, log the exception at `ERROR` level before returning the generic response so you can trace production issues.
 - **`ThumbnailService` — overly broad catch**: Catching `IllegalStateException` and `IllegalArgumentException` in `generateThumbnail` can mask unexpected bugs. Log the original exception before wrapping it in `ServerException`.
+
+---
+
+## Refactoring
+
+- **Decouple `ThumbnailService` from `JCodecVideoFrameReader`**: `ThumbnailService` hard-codes `new JCodecVideoFrameReader(...)` despite `VideoFrameReader` being an interface. Introduce a `VideoFrameReaderFactory` interface, implement it as a `@Component`, and inject it into the service — enabling implementation swaps (e.g., ffmpeg) and proper unit testing without touching the filesystem. See [video-frame-reader-factory.md](video-frame-reader-factory.md) for full details.
+- **`JobStore` is a pointless wrapper**: It only delegates directly to `JobRepository`. Either add real logic (caching, retry) or eliminate it and inject `JobRepository` directly.
