@@ -8,6 +8,10 @@ app:
   job-timeout: ${JOB_TIMEOUT:10m}
 
 spring:
+  security:
+    user:
+      name: ${APP_SECURITY_USER:admin}
+      password: ${APP_SECURITY_PASSWORD:changeme}
   datasource:
     url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/centroid_finder}
     username: ${SPRING_DATASOURCE_USERNAME:postgres}

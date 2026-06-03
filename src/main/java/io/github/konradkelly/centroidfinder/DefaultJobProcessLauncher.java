@@ -22,6 +22,12 @@ public class DefaultJobProcessLauncher implements JobProcessLauncher {
         int threshold,
         Duration timeout
     ) throws IOException, InterruptedException {
+        // Launch the processor jar as a separate JVM process using Spring Boot's
+        // PropertiesLauncher. This is required because the processor is packaged as a
+        // Spring Boot executable jar, and launching via PropertiesLauncher ensures the
+        // Spring Boot class loader and embedded dependencies are initialized correctly.
+        // Running in a separate process also isolates the video analysis from the
+        // web server process and avoids classpath conflicts.
         ProcessBuilder processBuilder = new ProcessBuilder(
             "java",
             "-Dloader.main=io.github.konradkelly.centroidfinder.VideoProcessorApp",
