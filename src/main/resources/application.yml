@@ -10,12 +10,12 @@ app:
 spring:
   security:
     user:
-      name: ${APP_SECURITY_USER:admin}
-      password: ${APP_SECURITY_PASSWORD:changeme}
+      name: ${APP_SECURITY_USER}
+      password: ${APP_SECURITY_PASSWORD}
   datasource:
     url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/centroid_finder}
-    username: ${SPRING_DATASOURCE_USERNAME:postgres}
-    password: ${SPRING_DATASOURCE_PASSWORD:postgres}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
   jpa:
     hibernate:
       ddl-auto: update
