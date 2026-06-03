@@ -16,6 +16,7 @@ public class JCodecVideoFrameReader implements VideoFrameReader {
     private final FrameGrab frameGrab;
     private final double frameRate;
     private int frameIndex;
+    private boolean closed;
 
     public JCodecVideoFrameReader(String inputPath) {
         this.videoFile = new File(inputPath);
@@ -74,8 +75,13 @@ public class JCodecVideoFrameReader implements VideoFrameReader {
 
     @Override
     public void close() {
+        if (closed) {
+            return;
+        }
+
         try {
             channel.close();
+            closed = true;
         } catch (IOException exception) {
             throw new IllegalStateException("Unable to close video reader for: " + videoFile, exception);
         }
