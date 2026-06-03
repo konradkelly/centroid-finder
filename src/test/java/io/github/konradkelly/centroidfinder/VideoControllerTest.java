@@ -159,13 +159,5 @@ public class VideoControllerTest {
         mockMvc.perform(post("/process/missing.mp4").param("targetColor", "FFAA11").param("threshold", "20"))
             .andExpect(status().isNotFound())
             .andExpect(jsonPath("$.error").value("Video not found"));
-    } @Test
-    public void startProcessReturnsNotFoundWhenVideoMissingOnStart() throws Exception {
-        when(jobService.start(eq("missing.mp4"), any(), any()))
-            .thenThrow(new NotFoundException("Video not found"));
-
-        mockMvc.perform(post("/process/missing.mp4").param("targetColor", "FFAA11").param("threshold", "20"))
-            .andExpect(status().isNotFound())
-            .andExpect(jsonPath("$.error").value("Video not found"));
     }
 }

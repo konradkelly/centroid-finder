@@ -67,8 +67,13 @@ public class DefaultJobProcessLauncher implements JobProcessLauncher {
     }
 
     private void drainOutput(Process process, StringBuilder sink) {
+        drainStream(process.getInputStream(), sink);
+    }
+
+    // Visible for tests
+    void drainStream(java.io.InputStream is, StringBuilder sink) {
         try (BufferedReader bufferedReader = new BufferedReader(
-            new InputStreamReader(process.getInputStream(), StandardCharsets.UTF_8))) {
+            new InputStreamReader(is, StandardCharsets.UTF_8))) {
             char[] buffer = new char[1024];
             int read;
             while ((read = bufferedReader.read(buffer)) != -1) {
@@ -81,7 +86,7 @@ public class DefaultJobProcessLauncher implements JobProcessLauncher {
                 }
             }
         } catch (IOException ignored) {
-            // process closed; output capture is best-effort
+            // stream closed; output capture is best-effort
         }
     }
 }
