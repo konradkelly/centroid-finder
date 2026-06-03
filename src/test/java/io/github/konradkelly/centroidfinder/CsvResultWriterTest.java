@@ -1,9 +1,12 @@
 package io.github.konradkelly.centroidfinder;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.Writer;
 import java.nio.file.Files;
 
 import org.junit.jupiter.api.Test;
@@ -48,5 +51,34 @@ public class CsvResultWriterTest {
             Files.readString(tempFile.toPath()).trim();
 
         assertEquals("5.5,10,20", content);
+    }
+
+    @Test
+    void writeThrowsWhenPrintWriterEncountersError() {
+        PrintWriter brokenWriter = new PrintWriter(new Writer() {
+            @Override
+            public void write(char[] cbuf, int off, int len) throws IOException {
+                throw new IOException("disk full");
+            }
+
+            @Override
+            public void flush() throws IOException {
+                throw new IOException("disk full");
+            }
+
+            @Override
+            public void close() throws IOException {
+                throw new IOException("disk full");
+            }
+        });
+
+        CsvResultWriter writer = new CsvResultWriter(brokenWriter);
+
+        IllegalStateException exception = assertThrows(
+            IllegalStateException.class,
+            () -> writer.write(new TimestampedCentroidResult(5.0, 10, 20))
+        );
+
+        assertEquals("Unable to write output CSV", exception.getMessage());
     }
 }
