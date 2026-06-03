@@ -6,10 +6,13 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import javax.imageio.ImageIO;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 @Service
 public class ThumbnailService {
+    private static final Logger log = LoggerFactory.getLogger(ThumbnailService.class);
     private final ServerPathsProperties paths;
 
     public ThumbnailService(ServerPathsProperties paths) {
@@ -32,6 +35,7 @@ public class ThumbnailService {
             }
             return output.toByteArray();
         } catch (IOException | IllegalStateException | IllegalArgumentException exception) {
+            log.error("Exception during thumbnail generation", exception);
             throw new ServerException("Error generating thumbnail", exception);
         }
     }
