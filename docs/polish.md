@@ -35,18 +35,6 @@ PostgreSQL must be running with a `centroid_finder` database before starting the
 docker run -d -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=centroid_finder -p 5432:5432 postgres:16-alpine
 ```
 
-If port 5432 is already in use (e.g. a local PostgreSQL install), map to a different host port instead:
-
-```powershell
-docker run -d -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=centroid_finder -p 5433:5432 postgres:16-alpine
-```
-
-Then set the URL override when starting the server:
-
-```powershell
-java -Dspring.datasource.url=jdbc:postgresql://localhost:5433/centroid_finder -jar target/centroid-finder-1.0-SNAPSHOT.jar
-```
-
 For local dev without PostgreSQL at all, use the in-memory H2 profile:
 
 ```powershell
