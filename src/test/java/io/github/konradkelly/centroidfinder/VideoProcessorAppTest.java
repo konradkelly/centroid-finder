@@ -91,7 +91,7 @@ public class VideoProcessorAppTest {
         String invalidOutputPath = Path.of("this", "path", "does", "not", "exist", "results.csv").toString();
 
         String errorOutput = runMainAndCaptureErrText(
-            new String[] {"sampleInput/pian_niu.mp4", invalidOutputPath, "FF0000", "25"}
+            new String[] {"sampleInput/blue_circle_red_bg.mp4", invalidOutputPath, "FF0000", "25"}
         );
 
         assertEquals("Unable to open output CSV: " + invalidOutputPath + System.lineSeparator(), errorOutput);
@@ -102,7 +102,7 @@ public class VideoProcessorAppTest {
         Path outputFile = Files.createTempFile("video-processor-app", ".csv");
 
         String errorOutput = runMainAndCaptureErrText(
-            new String[] {"sampleInput/pian_niu.mp4", outputFile.toString(), "FF0000", "25"}
+            new String[] {"sampleInput/blue_circle_red_bg.mp4", outputFile.toString(), "FF0000", "25"}
         );
 
         assertEquals("", errorOutput);

@@ -12,7 +12,7 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 
 public class JCodecVideoFrameReaderTest {
-    private static final String SAMPLE_VIDEO_PATH = "sampleInput/pian_niu.mp4";
+    private static final String SAMPLE_VIDEO_PATH = "sampleInput/blue_circle_red_bg.mp4";
 
     @Test
     public void constructorRejectsMissingVideoFile() {
