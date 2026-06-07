@@ -29,13 +29,40 @@ The biggest challenge was finding a threshold value that consistently identified
 
 ## Prerequisites
 
-PostgreSQL must be running with a `centroid_finder` database before starting the server.
+Choose a local runtime setup:
+
+### Option 1: Dockerized PostgreSQL + Spring Boot API
 
 ```powershell
-docker run -d -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=centroid_finder -p 5432:5432 postgres:16-alpine
+# Clean and build app
+mvn clean package
+
+# create a shared network for the app and database
+docker network create centroid-net
+
+# PostgreSQL
+docker run -d --name centroid-postgres --network centroid-net -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=centroid_finder -p 5432:5432 postgres:16-alpine
+
+# Spring Boot API
+docker run -d --name centroid-springboot --network centroid-net -p 8080:8080 `
+  -e SPRING_DATASOURCE_URL=jdbc:postgresql://centroid-postgres:5432/centroid_finder `
+  -e SPRING_DATASOURCE_USERNAME=postgres `
+  -e SPRING_DATASOURCE_PASSWORD=postgres `
+  -e VIDEOS_DIR=/app/videos `
+  -e RESULTS_DIR=/app/results `
+  -v "${PWD}/target:/app/target" `
+  -v "${PWD}/videos:/app/videos" `
+  -v "${PWD}/results:/app/results" `
+  -w /app eclipse-temurin:25-jre java -jar /app/target/centroid-finder-1.0-SNAPSHOT.jar
 ```
 
-For local dev without PostgreSQL at all, use the in-memory H2 profile:
+To stop and remove the containers later:
+
+```powershell
+docker rm -f centroid-springboot centroid-postgres
+```
+
+### Option 2: In-memory H2 profile (no PostgreSQL)
 
 ```powershell
 java -Dspring.profiles.active=test -jar target/centroid-finder-1.0-SNAPSHOT.jar
@@ -64,6 +91,8 @@ mvn -P integration test
 ```powershell
 java -jar target/centroid-finder-1.0-SNAPSHOT.jar
 ```
+
+Or run the Dockerized API container on `http://localhost:8080` using the commands above.
 
 Server runs at `http://localhost:8080`.
 
