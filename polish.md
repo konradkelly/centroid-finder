@@ -16,6 +16,8 @@ This was built as a part of a software development course. This application appl
 
 The biggest challenge was finding a threshold value that consistently identified the object. The same applied to selecting a target color. One video we used was a recording of a salamander. Many times there would be gaps in its body, or pixels that were not part of the animal would be included in the detection. This showed us how sensitive image processing algorithms can be to various lighting conditions and color variation within a frame.
 
+![Ensantina threshold demo](ensantina-thresholds.gif)
+
 ## Requirements
 
 - Java 17 or higher
