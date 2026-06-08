@@ -5,7 +5,7 @@ Theme: Build a scalable video centroid processing backend with better performanc
 ## Easy
 - Confirm the centroid pipeline works for static images and sample video frames.
 - Add or improve MP4 frame reading and verify timestamped centroid CSV output.
-- Use a faster video processing path such as FFmpeg or a better frame extraction library than the current JCodec implementation.
+- Replace JCodec with JavaCV (FFmpeg bindings) for faster video frame extraction.
 
 ## Goal
 - Implement a job queue to process multiple video jobs concurrently.
