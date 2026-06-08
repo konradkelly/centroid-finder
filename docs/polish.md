@@ -158,3 +158,8 @@ Pull requests are welcome. For bigger changes, open an issue first.
 Make sure to update or add JUnit tests before submitting.
 
 Developed by Konrad Kelly and Fredrick Karau 2026
+
+## ideas
+- I think making the color selection more flexible by where users can choose any color they want to track instead of using the current fixed color .
+- I think having object statistics report where it summarizes information about the processed video, fr example, the number of frames analyzed, the number of objects detected, and the average object size.
+- I think also a job history dashboard that allows users to view previous processing jobs, check their status, and see the  generated results.
