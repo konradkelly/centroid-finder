@@ -19,7 +19,7 @@ public class ThumbnailService {
     public byte[] generateThumbnail(String filename) {
         Path videoPath = resolveVideoPath(filename);
 
-        try (VideoFrameReader reader = new JCodecVideoFrameReader(videoPath.toString())) {
+        try (VideoFrameReader reader = new JavaCvVideoFrameReader(videoPath.toString())) {
             FrameSample sample = reader.nextFrame();
             if (sample == null) {
                 throw new ServerException("Error generating thumbnail");

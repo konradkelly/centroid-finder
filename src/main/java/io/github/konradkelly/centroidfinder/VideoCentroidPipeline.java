@@ -4,7 +4,7 @@ public class VideoCentroidPipeline {
     public void run(VideoProcessingConfig config) {
         FrameCentroidAnalyzer analyzer = new FrameCentroidAnalyzer(config.targetColor(), config.threshold());
 
-        try (VideoFrameReader reader = new JCodecVideoFrameReader(config.inputPath());
+        try (VideoFrameReader reader = new JavaCvVideoFrameReader(config.inputPath());
              CsvResultWriter writer = new CsvResultWriter(config.outputCsvPath())) {
             FrameSample sample;
             while ((sample = reader.nextFrame()) != null) {

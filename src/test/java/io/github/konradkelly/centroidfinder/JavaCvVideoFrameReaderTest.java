@@ -11,14 +11,14 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
-public class JCodecVideoFrameReaderTest {
+public class JavaCvVideoFrameReaderTest {
     private static final String SAMPLE_VIDEO_PATH = "sampleInput/blue_circle_red_bg.mp4";
 
     @Test
     public void constructorRejectsMissingVideoFile() {
         IllegalArgumentException exception = assertThrows(
             IllegalArgumentException.class,
-            () -> new JCodecVideoFrameReader("definitely-not-a-real-video-file.mp4")
+            () -> new JavaCvVideoFrameReader("definitely-not-a-real-video-file.mp4")
         );
 
         assertEquals("Unable to open video: definitely-not-a-real-video-file.mp4", exception.getMessage());
@@ -26,22 +26,23 @@ public class JCodecVideoFrameReaderTest {
 
     @Test
     public void constructorRejectsNullInputPath() {
-        assertThrows(NullPointerException.class, () -> new JCodecVideoFrameReader(null));
+        assertThrows(NullPointerException.class, () -> new JavaCvVideoFrameReader(null));
     }
 
     @Test
-    public void constructorRejectsExistingNonVideoFile() {
-        IllegalArgumentException exception = assertThrows(
-            IllegalArgumentException.class,
-            () -> new JCodecVideoFrameReader("sampleInput/squares.jpg")
-        );
+    public void constructorAcceptsExistingImageFileAndReturnsFrame() {
+        try (JavaCvVideoFrameReader reader = new JavaCvVideoFrameReader("sampleInput/squares.jpg")) {
+            FrameSample sample = reader.nextFrame();
 
-        assertEquals("Unable to open video: sampleInput/squares.jpg", exception.getMessage());
+            assertNotNull(sample);
+            assertNotNull(sample.frameImage());
+            assertEquals(0.0, sample.timestampSeconds(), 1e-9);
+        }
     }
 
     @Test
     public void nextFrameReturnsFirstFrameWithImageAndZeroTimestamp() {
-        try (JCodecVideoFrameReader reader = new JCodecVideoFrameReader(SAMPLE_VIDEO_PATH)) {
+        try (JavaCvVideoFrameReader reader = new JavaCvVideoFrameReader(SAMPLE_VIDEO_PATH)) {
             FrameSample first = reader.nextFrame();
 
             assertNotNull(first);
@@ -52,7 +53,7 @@ public class JCodecVideoFrameReaderTest {
 
     @Test
     public void nextFrameTimestampsIncreaseMonotonically() {
-        try (JCodecVideoFrameReader reader = new JCodecVideoFrameReader(SAMPLE_VIDEO_PATH)) {
+        try (JavaCvVideoFrameReader reader = new JavaCvVideoFrameReader(SAMPLE_VIDEO_PATH)) {
             List<Double> timestamps = new ArrayList<>();
 
             for (int i = 0; i < 5; i++) {
@@ -72,7 +73,7 @@ public class JCodecVideoFrameReaderTest {
 
     @Test
     public void nextFrameEventuallyReturnsNullAtEndOfStream() {
-        try (JCodecVideoFrameReader reader = new JCodecVideoFrameReader(SAMPLE_VIDEO_PATH)) {
+        try (JavaCvVideoFrameReader reader = new JavaCvVideoFrameReader(SAMPLE_VIDEO_PATH)) {
             FrameSample sample;
             int frameCount = 0;
 
@@ -87,7 +88,7 @@ public class JCodecVideoFrameReaderTest {
 
     @Test
     public void closeAfterReadDoesNotThrow() {
-        JCodecVideoFrameReader reader = new JCodecVideoFrameReader(SAMPLE_VIDEO_PATH);
+        JavaCvVideoFrameReader reader = new JavaCvVideoFrameReader(SAMPLE_VIDEO_PATH);
         reader.nextFrame();
 
         assertDoesNotThrow(reader::close);
@@ -95,7 +96,7 @@ public class JCodecVideoFrameReaderTest {
 
     @Test
     public void nextFrameAfterCloseThrowsIllegalStateException() {
-        JCodecVideoFrameReader reader = new JCodecVideoFrameReader(SAMPLE_VIDEO_PATH);
+        JavaCvVideoFrameReader reader = new JavaCvVideoFrameReader(SAMPLE_VIDEO_PATH);
         reader.close();
 
         IllegalStateException exception = assertThrows(IllegalStateException.class, reader::nextFrame);
@@ -104,7 +105,7 @@ public class JCodecVideoFrameReaderTest {
 
     @Test
     public void closeCanBeCalledTwiceWithoutThrowing() {
-        JCodecVideoFrameReader reader = new JCodecVideoFrameReader(SAMPLE_VIDEO_PATH);
+        JavaCvVideoFrameReader reader = new JavaCvVideoFrameReader(SAMPLE_VIDEO_PATH);
 
         assertDoesNotThrow(reader::close);
         assertDoesNotThrow(reader::close);
