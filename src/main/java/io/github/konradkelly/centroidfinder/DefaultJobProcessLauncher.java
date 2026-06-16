@@ -24,11 +24,8 @@ public class DefaultJobProcessLauncher implements JobProcessLauncher {
     ) throws IOException, InterruptedException {
         ProcessBuilder processBuilder = new ProcessBuilder(
             "java",
-            "-Dloader.main=io.github.konradkelly.centroidfinder.VideoProcessorApp",
-            "-cp",
+            "-jar",
             processorJar.toString(),
-            "org.springframework.boot.loader.launch.PropertiesLauncher",
-            "analyze",
             inputVideo.toString(),
             outputPath.toString(),
             targetColor,
