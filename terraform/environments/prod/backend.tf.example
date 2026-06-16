@@ -1,0 +1,9 @@
+terraform {
+  backend "s3" {
+    bucket         = "centroid-finder-tf-state-CHANGE_ME"
+    key            = "prod/terraform.tfstate"
+    region         = "us-east-1"
+    dynamodb_table = "centroid-finder-terraform-locks"
+    encrypt        = true
+  }
+}

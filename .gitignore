@@ -38,3 +38,9 @@ mvn_output.txt
 .env
 .env.local
 
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.*
+terraform/**/terraform.tfvars
+!terraform/**/terraform.tfvars.example

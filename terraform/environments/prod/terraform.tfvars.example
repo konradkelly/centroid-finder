@@ -1,0 +1,5 @@
+aws_region         = "us-east-1"
+github_org         = "konradkelly"
+github_repo        = "centroid-finder"
+create_ecs_service = false
+image_tag          = "bootstrap"
