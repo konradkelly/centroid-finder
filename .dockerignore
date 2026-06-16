@@ -1,0 +1,13 @@
+.git
+.github
+.env
+.env.*
+target/classes
+target/test-classes
+target/surefire-reports
+videos/
+results/
+sampleInput/
+docs/
+*.md
+terraform/
