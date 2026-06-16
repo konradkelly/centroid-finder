@@ -1,5 +1,9 @@
 aws_region         = "us-east-1"
 github_org         = "konradkelly"
 github_repo        = "centroid-finder"
-create_ecs_service = false
+create_ecs_service = true
 image_tag          = "bootstrap"
+
+ecs_cpu         = 1024
+ecs_memory      = 2048
+ecs_job_timeout = "45m"

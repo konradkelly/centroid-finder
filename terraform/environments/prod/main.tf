@@ -85,6 +85,9 @@ module "ecs" {
   target_group_arn            = module.alb.target_group_arn
   create_service              = var.create_ecs_service
   desired_count               = var.ecs_desired_count
+  cpu                         = var.ecs_cpu
+  memory                      = var.ecs_memory
+  job_timeout                 = var.ecs_job_timeout
 }
 
 module "github_oidc" {

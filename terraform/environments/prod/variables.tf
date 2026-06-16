@@ -45,3 +45,21 @@ variable "ecs_desired_count" {
   type    = number
   default = 1
 }
+
+variable "ecs_cpu" {
+  type        = number
+  default     = 1024
+  description = "Fargate CPU units for the app task"
+}
+
+variable "ecs_memory" {
+  type        = number
+  default     = 2048
+  description = "Fargate memory (MiB) for the app task"
+}
+
+variable "ecs_job_timeout" {
+  type        = string
+  default     = "45m"
+  description = "Max video processor runtime (JOB_TIMEOUT env var)"
+}

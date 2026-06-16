@@ -58,12 +58,18 @@ variable "create_service" {
 
 variable "cpu" {
   type    = number
-  default = 512
+  default = 1024
 }
 
 variable "memory" {
   type    = number
-  default = 1024
+  default = 2048
+}
+
+variable "job_timeout" {
+  type        = string
+  default     = "45m"
+  description = "Max runtime for the video processor subprocess (Spring JOB_TIMEOUT)"
 }
 
 locals {
@@ -203,6 +209,7 @@ resource "aws_ecs_task_definition" "app" {
       { name = "VIDEOS_DIR", value = "/app/videos" },
       { name = "RESULTS_DIR", value = "/app/results" },
       { name = "VIDEO_PROCESSOR_JAR", value = "/app/processor.jar" },
+      { name = "JOB_TIMEOUT", value = var.job_timeout },
       { name = "SPRING_PROFILES_ACTIVE", value = "prod" },
       { name = "SPRING_DATASOURCE_URL", value = local.datasource_url },
     ]
