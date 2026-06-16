@@ -117,6 +117,8 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
                     <mainClass>io.github.konradkelly.centroidfinder.ServerApplication</mainClass>
+                    <!-- Keep the thin jar as the main artifact for the processor assembly -->
+                    <classifier>boot</classifier>
                 </configuration>
             </plugin>
 
