@@ -7,6 +7,16 @@ app:
   video-processor-jar: ${VIDEO_PROCESSOR_JAR:./target/centroid-finder-1.0-SNAPSHOT-jar-with-dependencies.jar}
   job-timeout: ${JOB_TIMEOUT:10m}
 
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+  endpoint:
+    health:
+      probes:
+        enabled: true
+
 spring:
   datasource:
     url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/centroid_finder}
