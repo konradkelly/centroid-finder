@@ -94,6 +94,8 @@ data "aws_iam_policy_document" "github_deploy" {
       "ecs:DescribeTasks",
       "ecs:ListTasks",
       "ecs:RegisterTaskDefinition",
+      "ecs:TagResource",
+      "ecs:UntagResource",
       "ecs:UpdateService",
     ]
     resources = ["*"]
