@@ -1,11 +1,29 @@
 ﻿# Centroid Finder
 
-Centroid Finder is a Java project that analyzes images and videos to locate objects based on a given color. It finds the centroid (the average position of a group of matching pixels) for each detected object, and records that location over time as a CSV.
+Centroid Finder is a Java project that analyzes images and videos to locate objects based on a given color. It finds the centroid (the average position of a group of matching pixels) for each detected object, and writes a timestamped location to a CSV. 
+
+This was built as a part of a software development course. This application applies the DFS (Depth-First-Search) algorithm to identify targeted pixels.
+
+## Architecture
+
+**Image Processing** - handles color distance calculations, binarizing images by color threshold, and writing centroid groups to CSV
+
+**Video Processing** - uses JavaCV and FFmpeg to read frames; each frame gets binarized and analyzed, with centroid positions tracked and written out as a timestamped CSV
+
+**Server** - Spring Boot REST API for listing videos, generating thumbnails, submitting jobs, and polling status
+
+## Challenges
+
+The biggest challenge was finding a threshold value that consistently identified the object. The same applied to selecting a target color. One video we used was a recording of a salamander. Many times there would be gaps in its body, or pixels that were not part of the animal would be included in the detection. This showed us how sensitive image processing algorithms can be to various lighting conditions and color variation within a frame.
+
+![Ensantina threshold demo](docs/ensantina-thresholds.gif)
+
+![Ensantina web preview](docs/preview-ensantina.png)
 
 ## Requirements
 
 - Java 17 or higher
-- Maven 3.8+
+- Maven
 - JavaCV (FFmpeg bindings) for video frame extraction
 - JUnit 5
 - Docker
@@ -13,25 +31,40 @@ Centroid Finder is a Java project that analyzes images and videos to locate obje
 
 ## Prerequisites
 
-PostgreSQL must be running with a `centroid_finder` database before starting the server.
+Choose a local runtime setup:
+
+### Option 1: Dockerized PostgreSQL + Spring Boot API
 
 ```powershell
-docker run -d -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=centroid_finder -p 5432:5432 postgres:16-alpine
+# Clean and build app
+mvn clean package
+
+# create a shared network for the app and database
+docker network create centroid-net
+
+# PostgreSQL
+docker run -d --name centroid-postgres --network centroid-net -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=centroid_finder -p 5432:5432 postgres:16-alpine
+
+# Spring Boot API
+docker run -d --name centroid-springboot --network centroid-net -p 8080:8080 `
+  -e SPRING_DATASOURCE_URL=jdbc:postgresql://centroid-postgres:5432/centroid_finder `
+  -e SPRING_DATASOURCE_USERNAME=postgres `
+  -e SPRING_DATASOURCE_PASSWORD=postgres `
+  -e VIDEOS_DIR=/app/videos `
+  -e RESULTS_DIR=/app/results `
+  -v "${PWD}/target:/app/target" `
+  -v "${PWD}/videos:/app/videos" `
+  -v "${PWD}/results:/app/results" `
+  -w /app eclipse-temurin:25-jre java -jar /app/target/centroid-finder-1.0-SNAPSHOT.jar
 ```
 
-If port 5432 is already in use (e.g. a local PostgreSQL install), map to a different host port instead:
+To stop and remove the containers later:
 
 ```powershell
-docker run -d -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=centroid_finder -p 5433:5432 postgres:16-alpine
+docker rm -f centroid-springboot centroid-postgres
 ```
 
-Then set the URL override when starting the server:
-
-```powershell
-java -Dspring.datasource.url=jdbc:postgresql://localhost:5433/centroid_finder -jar target/centroid-finder-1.0-SNAPSHOT.jar
-```
-
-For local dev without PostgreSQL at all, use the in-memory H2 profile:
+### Option 2: In-memory H2 profile (no PostgreSQL)
 
 ```powershell
 java -Dspring.profiles.active=test -jar target/centroid-finder-1.0-SNAPSHOT.jar
@@ -61,28 +94,55 @@ mvn -P integration test
 java -jar target/centroid-finder-1.0-SNAPSHOT.jar
 ```
 
-Starts on `http://localhost:8080`.
+Or run the Dockerized API container on `http://localhost:8080` using the commands above.
 
-## Running the CLI (video analysis)
+Server runs at `http://localhost:8080`.
+
+## Running the Video Processing CLI
 
 ```powershell
-# Extract centroids frame-by-frame to CSV
-java -jar target/centroid-finder-1.0-SNAPSHOT-jar-with-dependencies.jar input.mp4 output.csv FF0000 25
+# Analyze video and write centroid CSV
+java -jar target/centroid-finder-1.0-SNAPSHOT-jar-with-dependencies.jar input.mp4 output.csv FF0000 100
 
 # Extract first frame as a JPEG thumbnail
-java -jar target/centroid-finder-1.0-SNAPSHOT-jar-with-dependencies.jar thumbnail input.mp4 thumb.jpg
+java -jar target/centroid-finder-1.0-SNAPSHOT-jar-with-dependencies.jar thumbnail input.mp4 thumbnail.jpg
 ```
 
 Arguments: `inputPath outputCsv targetColor(hex) threshold(0-442)`
 
-## API
+## API Endpoints
 
 - `GET /api/videos` — list filenames of videos in `VIDEOS_DIR`
-- `GET /thumbnail/{filename}` — first-frame of JPEG thumbnail
-- `POST /process/{filename}?targetColor=FF0000&threshold=25` — start a job and then return a job ID
-- `GET /process/{jobId}/status` — check job status and result path when done
+- `GET /thumbnail/{filename}` — returns a JPEG of the first frame
+- `POST /process/{filename}?targetColor=FF0000&threshold=100` — queues a job and returns a job ID
+  ```json
+  { "jobId": "550e8401-e29b-41d4-a716-446655430900" }
+  ```
+- `GET /process/{jobId}/status` — get the current job status and result location
+  ```json
+  // While running:
+  { "status": "processing" }
+
+  // On success:
+  { "status": "done", "result": "results/video_FF0000_100.csv" }
+
+  // On failure:
+  { "status": "error", "error": "Job timed out after 10m" }
+  ```
 - `GET /videos/{filename}` — access the video file
-- `GET /results/{filename}` — access the result CSV
+- `GET /results/{filename}` — download the result CSV
+
+### Example Output CSV Data
+
+```
+timestamp,x,y
+0,112,205
+1,118,210
+2,121,207
+3,-1,-1
+```
+
+Each row represents one second of the video. The x and y coordinates `-1,-1` is returned when no matching pixels are detected.
 
 ## Environment Variables
 
@@ -93,13 +153,9 @@ Arguments: `inputPath outputCsv targetColor(hex) threshold(0-442)`
 - `SPRING_DATASOURCE_PASSWORD` (default `postgres`)
 - `JOB_TIMEOUT` (default `10m`) — sets the max time a job can run
 
-## Project Structure
+## Deployment
 
-**Image Processing** - color distance and centroid calculations, image binarization, and CSV file generation
-
-**Video Processing** - reads video frames with JavaCV and FFmpeg, analyzing each frame individually, tracking centroids over time, writing timestamped results to CSV files
-
-**Server** - Spring Boot REST API for serving video catalog, thumbnail generation, job submission, job status tracking, and result output
+This project is deployed to AWS with [Terraform](https://www.terraform.io/). Infrastructure is defined under `terraform/` (ECS Fargate for the application, RDS PostgreSQL, and supporting networking). The React frontend lives in [Salamander-Labs](https://github.com/konradkelly/Salamander-Labs); use `frontend-infra-template/` to deploy it (S3 + CloudFront). See [`terraform/README.md`](terraform/README.md) for bootstrap and deployment steps.
 
 ## Contributing
 
@@ -107,5 +163,4 @@ Pull requests are welcome. For bigger changes, open an issue first.
 
 Make sure to update or add JUnit tests before submitting.
 
-
-Developed by Konrad Kelly and Fredrick Karau
+Developed by Konrad Kelly and Fredrick Karau 2026

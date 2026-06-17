@@ -18,6 +18,8 @@ The biggest challenge was finding a threshold value that consistently identified
 
 ![Ensantina threshold demo](ensantina-thresholds.gif)
 
+![Ensantina web preview](preview-ensantina.png)
+
 ## Requirements
 
 - Java 17 or higher
@@ -150,6 +152,10 @@ Each row represents one second of the video. The x and y coordinates `-1,-1` is 
 - `SPRING_DATASOURCE_USERNAME` (default `postgres`)
 - `SPRING_DATASOURCE_PASSWORD` (default `postgres`)
 - `JOB_TIMEOUT` (default `10m`) — sets the max time a job can run
+
+## Deployment
+
+This project is deployed to AWS with [Terraform](https://www.terraform.io/). Infrastructure is defined under `terraform/` (ECS Fargate for the application, RDS PostgreSQL, and supporting networking). The React frontend lives in [Salamander-Labs](https://github.com/konradkelly/Salamander-Labs); use `frontend-infra-template/` to deploy it (S3 + CloudFront). See [`terraform/README.md`](terraform/README.md) for bootstrap and deployment steps.
 
 ## Contributing
 
